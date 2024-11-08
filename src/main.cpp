@@ -1,18 +1,23 @@
 #include <Arduino.h>
-
+int in1 = 0;
+int in2 = 1;
+int motorPin = 2;
 // put function declarations here:
-int myFunction(int, int);
+
 
 void setup() {
   // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+pinMode(in1, OUTPUT);
+pinMode(in2, OUTPUT);
+pinMode(motorPin, OUTPUT);
+
+
 }
 
 void loop() {
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, HIGH);
+  digitalWrite(motorPin, HIGH);
   // put your main code here, to run repeatedly:
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}
