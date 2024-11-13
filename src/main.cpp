@@ -1,22 +1,22 @@
 #include <Arduino.h>
 
-#define in11 2
-#define in21 4
-#define motorPin1 5
-#define in12
-#define in22
-#define motorPin2 
+#define in1Left 2
+#define in2Left 4
+#define motorPinLeft 5
+#define in1Right
+#define in2Right
+#define motorPinRight 
 #define xPin 27
 #define yPin 26
 
 // Variable for motor direction, true means forward, false means reverse
-bool direction1 = true;
-bool direction2 = true;
+bool directionLeft = true;
+bool directionRight = true;
 
 void setup() {
-    pinMode(in11, OUTPUT);
-    pinMode(in21, OUTPUT);
-    pinMode(motorPin1, OUTPUT);
+    pinMode(in1Left, OUTPUT);
+    pinMode(in2Left, OUTPUT);
+    pinMode(motorPinLeft, OUTPUT);
     Serial.begin(9600);
 }
 
@@ -35,21 +35,21 @@ void loop() {
 
     // Determine motor direction based on X-axis input
     if (x >= 512) { // Positive X direction (right)
-        direction1 = true;  // setting direction to forward
+        directionLeft = true;  // setting direction to forward
     } else { // Negative X direction (left)
-        direction1 = false; // setting direction to reverse
+        directionLeft = false; // setting direction to reverse
     }
     //direction = x >= 2048;
 
     //Serial.println(x);
     Serial.println(xMapped);
-    Serial.println(direction1);
+    Serial.println(directionLeft);
 
     // Set motor direction based on the joystick input
-    digitalWrite(in11, direction1);
-    digitalWrite(in21, !direction1);
+    digitalWrite(in1Left, direction1);
+    digitalWrite(in2Left, !direction1);
 
     // Set motor speed with PWM based on mapped X value
-    analogWrite(motorPin1, xMapped);
+    analogWrite(motorPinLeft, xMapped);
     delay(100); // small delay to smooth motor response
 }
