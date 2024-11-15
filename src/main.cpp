@@ -14,7 +14,7 @@ bool directionLeft = true;
 bool directionRight = true;
 
 int turnSpeed = .5;
-int speed = 1;
+int speed = 2;
 
 void setup() {
     pinMode(in1Left, OUTPUT);
@@ -32,7 +32,7 @@ void loop() {
     int y = analogRead(yPin);
 
     // Map the joystick X value to a motor speed range (0 to 255)
-    int xMapped = map(abs(x - 512), 0, 1024, 0, 255); // Normalize X around center 2048
+    int xMapped = map(abs(x - 512), 0, 1024, 0, 255); // Normalize X around center 512
     int yMapped = map(abs(y - 512), 0, 1024, 0, 255);
 
         if (xMapped > -17 && xMapped < 17) {
@@ -40,40 +40,51 @@ void loop() {
     }
 
     // Determine motor direction based on X-axis input
-    if (x >= 512) { // Positive X direction (right)
+    if (x >= 600) { // Positive X direction (right)
         directionLeft = true;
         directionRight = true;  // setting direction to forward
-        speed = 1;
-    } else { // Negative X direction (left)
+        speed = 2;
+    } else if (x<400) { // Negative X direction (left)
         directionLeft = false;
-        directionRight = true; // setting direction to reverse
-        speed = 1;
+        directionRight = false; // setting direction to reverse
+        speed = 2;
     }
     //for right and left
-    if(y>=600){
+
+
+    if(y>=900){
+    delay(200);
         directionRight = true;
         directionLeft = false;
-        speed = turnSpeed;
-    } else if(y<600) {
+       // speed = turnSpeed;
+    } else if(y<200) {
+    delay(200);
         directionRight = false;
-        directionRight = true;
-        speed = turnSpeed; 
+        directionLeft = true;
+       // speed = turnSpeed; 
     }
+
+
     //direction = x >= 2048;
 
     //Serial.println(x);
-    Serial.println(xMapped);
+    // Serial.println(xMapped);
+    // Serial.println(yMapped);
+    // Serial.println("stats");
+    Serial.println("direction");
     Serial.println(directionLeft);
+    Serial.println(directionRight);
+
 
     // Set motor direction based on the joystick input
     digitalWrite(in1Left, directionLeft);
     digitalWrite(in2Left, !directionLeft);
 
-    digitalWrite(in1Left, directionRight);
-    digitalWrite(in2Left, !directionRight);
+    digitalWrite(in1Right, !directionRight);
+    digitalWrite(in2Right, directionRight);
 
     // Set motor speed with PWM based on mapped X value
-    analogWrite(motorPinLeft, xMapped);
-    analogWrite(motorPinRight, (yMapped*speed));
-    delay(100); // small delay to smooth motor response
+    analogWrite(motorPinLeft, xMapped*speed);
+    analogWrite(motorPinRight, xMapped*speed);
+    delay(1); // small delay to smooth motor response
 }
