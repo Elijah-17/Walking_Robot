@@ -1,11 +1,11 @@
 #include <Arduino.h>
 
-#define in1Left 2
+#define in1Left 5
 #define in2Left 4
-#define motorPinLeft 5
-#define in1Right
-#define in2Right
-#define motorPinRight 
+#define motorPinLeft 0
+#define in1Right 2
+#define in2Right 3
+#define motorPinRight 1
 #define xPin 27
 #define yPin 26
 
@@ -13,10 +13,16 @@
 bool directionLeft = true;
 bool directionRight = true;
 
+int turnSpeed = .5;
+int speed = 1;
+
 void setup() {
     pinMode(in1Left, OUTPUT);
     pinMode(in2Left, OUTPUT);
     pinMode(motorPinLeft, OUTPUT);
+    pinMode(in1Right, OUTPUT);
+    pinMode(in2Right, OUTPUT);
+    pinMode(motorPinRight, OUTPUT);
     Serial.begin(9600);
 }
 
@@ -35,9 +41,23 @@ void loop() {
 
     // Determine motor direction based on X-axis input
     if (x >= 512) { // Positive X direction (right)
-        directionLeft = true;  // setting direction to forward
+        directionLeft = true;
+        directionRight = true;  // setting direction to forward
+        speed = 1;
     } else { // Negative X direction (left)
-        directionLeft = false; // setting direction to reverse
+        directionLeft = false;
+        directionRight = true; // setting direction to reverse
+        speed = 1;
+    }
+    //for right and left
+    if(y>=600){
+        directionRight = true;
+        directionLeft = false;
+        speed = turnSpeed;
+    } else if(y<600) {
+        directionRight = false;
+        directionRight = true;
+        speed = turnSpeed; 
     }
     //direction = x >= 2048;
 
@@ -46,10 +66,14 @@ void loop() {
     Serial.println(directionLeft);
 
     // Set motor direction based on the joystick input
-    digitalWrite(in1Left, direction1);
-    digitalWrite(in2Left, !direction1);
+    digitalWrite(in1Left, directionLeft);
+    digitalWrite(in2Left, !directionLeft);
+
+    digitalWrite(in1Left, directionRight);
+    digitalWrite(in2Left, !directionRight);
 
     // Set motor speed with PWM based on mapped X value
     analogWrite(motorPinLeft, xMapped);
+    analogWrite(motorPinRight, (yMapped*speed));
     delay(100); // small delay to smooth motor response
 }
